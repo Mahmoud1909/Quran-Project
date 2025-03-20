@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quran_project/data/location_drawer.dart';
 import 'package:quran_project/widgets/azkar_widget.dart';
+import 'package:quran_project/widgets/favouriteazkarscreen.dart';
 import 'package:quran_project/widgets/prayer_times_widget.dart';
 import 'package:quran_project/widgets/quran_widget.dart';
 import 'package:quran_project/widgets/tasks_widget.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -31,6 +31,26 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(titles[current]),
         backgroundColor: Colors.brown,
+        actions: current == 3
+            ? [
+          Padding(
+            padding: const EdgeInsets.only(right: 28.0),
+            child: IconButton(
+              icon: const Icon(Icons.favorite, color: Colors.white),
+              onPressed: () {
+                // الانتقال إلى شاشة المفضلة
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FavouriteAzkarScreen(),
+                  ),
+                );
+              },
+            ),
+          ),
+
+        ]
+            : null,
       ),
       drawer: current == 0
           ? LocationDrawer(

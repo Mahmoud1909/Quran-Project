@@ -8,7 +8,6 @@ Future<PrayerTimesResponse?> fetchPrayerTimes({
   required String country,
   int method = 4,
 }) async {
-  // تكوين الرابط باستخدام Uri.https لضمان تشفير المسافات وغيرها من الحروف الخاصة
   final uri = Uri.https('api.aladhan.com', '/v1/timingsByCity', {
     'city': city,
     'country': country,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quran_project/screens/RegisterScreen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -10,17 +11,47 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isObscure = true;
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  Future<void> _checkLogin() async {
+    String username = _usernameController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Fields cannot be empty")),
+      );
+      return;
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedUsername = prefs.getString('username');
+    String? savedPassword = prefs.getString('password');
+
+    if (savedUsername == username && savedPassword == password) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Login Successful")),
+      );
+      Navigator.pushNamed(context, 's1');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Invalid username or password")),
+      );
+      _usernameController.clear();
+      _passwordController.clear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    var username = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF785447),
@@ -28,7 +59,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: Stack(
         children: [
-          //Positioned.fill(
           SizedBox.expand(
             child: Image.network(
               "images/pexels-a-darmel-8164743.jpg",
@@ -53,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 20),
                   TextFormField(
-                    controller: username,
+                    controller: _usernameController,
                     decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
@@ -68,9 +98,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       labelStyle: TextStyle(fontSize: 20, color: Colors.black),
                     ),
                   ),
-
                   SizedBox(height: 20),
                   TextFormField(
+                    controller: _passwordController,
                     obscureText: _isObscure,
                     decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
@@ -86,7 +116,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             _isObscure = !_isObscure;
                           });
                         },
-
                         icon: Icon(
                           _isObscure
                               ? Icons.remove_red_eye
@@ -101,16 +130,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 20),
                   MaterialButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, 's1');
-                    },
+                    onPressed: _checkLogin, // استدعاء دالة التحقق
                     color: Colors.brown,
                     child: Text("Login"),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -118,7 +144,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text("Don't have an account?"),
                       TextButton(
                         onPressed: () {
-                          // Go to the recording screen when you press the button
                           Navigator.push(
                             context,
                             MaterialPageRoute(

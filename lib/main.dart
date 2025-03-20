@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran_project/screens/HomeScreen.dart';
 import 'package:quran_project/screens/LoginScreen.dart';
-import 'package:quran_project/widgets/prayer_times_widget.dart';
+
 
 void main() {
   runApp(const MyApp());

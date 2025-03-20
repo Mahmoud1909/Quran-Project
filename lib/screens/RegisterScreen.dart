@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -37,6 +38,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
     return passwordRegExp.hasMatch(password);
   }
+
+  void _saveUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', _usernameController.text.trim());
+    await prefs.setString('password', _passwordController.text.trim());
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Saved successfully")),
+    );
+
+    _clearFields();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -226,11 +240,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               if (!_formKey.currentState!.validate()) {
                                 return;
                               }
+                              _saveUserData();
 
-                              _clearFields();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Saved successfully")),
-                              );
                             },
                             color: Colors.brown,
                             shape: RoundedRectangleBorder(
